@@ -1,0 +1,30 @@
+.flex { display: flex; gap: 2em; }
+.center { place-content: center; place-items: center; }
+
+.calendar {
+    background-color: azure;
+    min-width: 30em;
+    max-width: fit-content;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 2em;
+
+    & h1{
+        text-align: center;
+    }
+
+    & .weeks {
+        color: #313131;
+    }
+
+    & .days {
+        margin-top: 2em;
+        font-size: larger;
+    }
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-row: 3em;
+}
