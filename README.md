@@ -6,5 +6,7 @@ Menstrual planner to check safe periods, ovulation and menstrual period
 
 run
 
-```pnpm install dev
+```
+pnpm install dev
+
 ```
