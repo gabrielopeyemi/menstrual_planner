@@ -11,7 +11,7 @@ function App() {
   return (
     <>
       <div>
-        <h1>Calendar design</h1>
+        <h1>Menstrual Cycle Planner</h1>
         <p>today is {dateFn.today}</p>
         <p>
           {dateFn.currentMonth} has {length} days
