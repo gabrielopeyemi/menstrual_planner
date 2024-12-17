@@ -5,7 +5,6 @@ import updateMonth from "../../utils/time/updateMonth";
 export type monthChangeProps = 'plus' | 'minus';
 
 const useTimeTrack = () => {
-
   const [tempDate, setTempDate] = useState(new Date());
   const [daysLength, setDaysLength] = useState(getDaysInMonth(tempDate.getMonth()))
   const [dayArr, setDayArr] = useState<number []>(lengthDays(daysLength));
