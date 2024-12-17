@@ -34,6 +34,24 @@ export function Calendar(props: calendarProps) {
     return new Date(prev);
   });
 
+  const nextPeriods = new Date(menstrual?.nextPeriodStartDate);
+  let next = nextPeriods;
+  const nextPeriodDays = [1, 2, 3, 4, 5].map(() => {
+    const each = nextPeriods.setDate(next.getDate() + 1);
+    next = new Date(each);
+    return new Date(prev);
+  });
+
+  const isNextPeriods = (day: number) => {
+    const isFound = nextPeriodDays.find(
+      (each) => each.getDate() === day && each.getMonth() === rawDate.getMonth()
+    );
+    if (isFound) {
+      return true;
+    }
+    return false;
+  };
+
   const isLastPeriod = (day: number) => {
     const isFound = periodDays.find((each) => each.getDate() === day);
     if (isFound) {
@@ -61,6 +79,16 @@ export function Calendar(props: calendarProps) {
     if (
       day >= menstrual?.fertileWindow?.start?.getDate() &&
       day <= menstrual?.fertileWindow?.end?.getDate()
+    )
+      return true;
+    return false;
+  };
+
+  const isSafePeriodAfter = (day: number) => {
+    if (
+      day >= menstrual?.safePeriod?.after?.start?.getDate() &&
+      day <= menstrual?.safePeriod?.after?.end?.getDate() &&
+      rawDate?.getMonth() === menstrual?.safePeriod?.after?.start?.getMonth()
     )
       return true;
     return false;
@@ -117,6 +145,18 @@ export function Calendar(props: calendarProps) {
               <div
                 style={{
                   ...(isSafePeriod(e) && isSafeStyle),
+                }}
+              />
+
+              <div
+                style={{
+                  ...(isNextPeriods(e) && isPeriodStyle),
+                }}
+              />
+
+              <div
+                style={{
+                  ...(isSafePeriodAfter(e) && isSafeStyle),
                 }}
               />
 
