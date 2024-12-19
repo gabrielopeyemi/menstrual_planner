@@ -1,3 +1,9 @@
+export type monthChangeProps = 'plus' | 'minus';
+export interface PeriodProps {
+  lastPeriod: Date;
+  setLastPeriod: (date: Date) => void;
+}
+
 export interface dateProps {
     month: string;
     year: string;
@@ -17,6 +23,7 @@ export interface safePeriodProps {
   }
 
 export interface menstrualProps {
+    previousPeriodDate: Date,
     lastPeriodStartDate: Date,
     nextPeriodStartDate: Date,
     ovulationDate: Date,

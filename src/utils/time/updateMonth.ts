@@ -1,4 +1,4 @@
-import { monthChangeProps } from "../../hooks/time/useTimeTrack";
+import { monthChangeProps } from "../../hooks/time/useMonthDays";
 
 function updateMonth (pre: Date, state: monthChangeProps) {
     const newDate = new Date(pre);

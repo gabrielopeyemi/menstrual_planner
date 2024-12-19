@@ -1,5 +1,11 @@
 function calculateMenstrualCycleDetails(startDate: Date, cycleLength = 28) {
     const lastPeriodDate = new Date(startDate);
+
+    // Calculate previous period date
+    const previousPeriodDate = new Date(lastPeriodDate);
+    previousPeriodDate.setDate(lastPeriodDate.getDate() - cycleLength);
+
+
     const nextPeriodDate = new Date(lastPeriodDate);
     nextPeriodDate.setDate(lastPeriodDate.getDate() + cycleLength);
   
@@ -24,6 +30,7 @@ function calculateMenstrualCycleDetails(startDate: Date, cycleLength = 28) {
     };
   
     return {
+      previousPeriodStartDate: previousPeriodDate.toDateString(),
       lastPeriodStartDate: lastPeriodDate.toDateString(),
       nextPeriodStartDate: nextPeriodDate.toDateString(),
       ovulationDate: ovulationDate.toDateString(),
