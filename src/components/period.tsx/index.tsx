@@ -1,13 +1,10 @@
-import { DateGroup } from "../../date.class";
+import { DateClass } from "../../date.class";
 import { usePeriod } from "../../hooks/time";
-import useMonthDays from "../../hooks/time/useMonthDays";
 import { monthChangeProps, PeriodProps } from "../../interface";
 import { Calendar } from "../calendar";
 import Illustration from "../calendar/illustration";
 
 export default function Period({ lastPeriod, setLastPeriod }: PeriodProps) {
-  const { days } = useMonthDays(lastPeriod.getMonth());
-
   const {
     lastPeriodStartDate,
     previousPeriodDate,
@@ -24,17 +21,7 @@ export default function Period({ lastPeriod, setLastPeriod }: PeriodProps) {
       return setLastPeriod(previousPeriodDate);
   };
 
-  const { currentDay, currentMonth, currentYear, weeks } = new DateGroup(
-    lastPeriod
-  );
-  const date = {
-    month: currentMonth,
-    year: currentYear,
-    weeks,
-    day: currentDay,
-    days,
-    rawDate: lastPeriod,
-  };
+  const { dateExport } = new DateClass(lastPeriod);
 
   const isCalendarReady =
     previousPeriodDate &&
@@ -49,9 +36,9 @@ export default function Period({ lastPeriod, setLastPeriod }: PeriodProps) {
       <Illustration />
       {isCalendarReady && (
         <Calendar
-          calendarDate={date}
+          calendarDate={dateExport}
           onChangeMonth={handleChangeMonth}
-          currentDay={currentDay}
+          currentDay={dateExport.isCurrentDay}
           menstrual={{
             previousPeriodDate,
             lastPeriodStartDate,
