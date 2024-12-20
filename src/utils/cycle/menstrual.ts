@@ -13,12 +13,13 @@ function calculateMenstrualCycleDetails(startDate: Date, cycleLength = 28) {
     const ovulationDate = new Date(nextPeriodDate);
     ovulationDate.setDate(nextPeriodDate.getDate() - 14);
   
-    // Calculate safe periods
+    
     const fertileWindowStart = new Date(ovulationDate);
     fertileWindowStart.setDate(ovulationDate.getDate() - 5); // 5 days before ovulation
     const fertileWindowEnd = new Date(ovulationDate);
     fertileWindowEnd.setDate(ovulationDate.getDate() + 1); // 1 day after ovulation
-  
+    
+  // Calculate safe periods
     const safePeriodBefore = {
       start: lastPeriodDate.toDateString(),
       end: new Date(fertileWindowStart.getTime() - 1 * 24 * 60 * 60 * 1000).toDateString(), // Day before fertile window starts
