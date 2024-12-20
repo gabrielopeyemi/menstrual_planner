@@ -1,7 +1,24 @@
-import { getDay, isSameMonth } from "date-fns";
+import { getDay, isSameDay, isSameMonth, isWithinInterval } from "date-fns";
 import { menstrualProps } from "../interface";
 
+const periodTemp = (temp: Date) => Array.from({length: 5 }, () => {
+  const each = new Date(temp);
+  each.setDate(temp.getDate() + 1);
+  temp = new Date(each);
+  return each;
+})
+
+const isPeriodTemp = (temp: Date[], day: number, rawDate: Date) => {
+  const isFound = temp.find((each) => each.getDate() === day && each.getMonth() === rawDate.getMonth());
+  if (isFound) {
+    return true;
+  }
+  return false;
+};
+
 const useCalendar = (rawDate: Date, menstrual: menstrualProps, currentDay: (days: number) => void) => {
+
+
     const isCurrentDate = (day: number) => {
         if (isSameMonth(rawDate, new Date())) return currentDay(day);
         return false;
@@ -16,88 +33,57 @@ const useCalendar = (rawDate: Date, menstrual: menstrualProps, currentDay: (days
         return weekDay + 1;
       };
     
-      const periods = new Date(menstrual?.lastPeriodStartDate);
-      let prev = periods;
-      const periodDays = [0, 1, 1, 1, 1].map((e) => {
-        const each = periods.setDate(prev.getDate() + e);
-        prev = new Date(each);
-        return new Date(prev);
-      });
-    
-      const nextPeriods = new Date(menstrual?.nextPeriodStartDate);
-      let next = nextPeriods;
-      const nextPeriodDays = [0, 1, 1, 1, 1].map((e) => {
-        const each = nextPeriods.setDate(next.getDate() + e);
-        next = new Date(each);
-        return new Date(prev);
-      });
-
       const previousPeriods = new Date(menstrual?.previousPeriodDate);
-      let previous = previousPeriods;
-      const prevPeriodDays = [0, 1, 1, 1, 1].map((e) => {
-        const each = previousPeriods.setDate(previous.getDate() + e);
-        previous = new Date(each);
-        return new Date(prev);
-      });
-
-      const isPreviousPeriods = (day: number) => {
-        const isFound = prevPeriodDays.find(
-          (each) => each.getDate() === day && each.getMonth() === rawDate.getMonth()
-        );
-        if (isFound) {
-          return true;
-        }
-        return false;
-      };
+      const periods = new Date(menstrual?.lastPeriodStartDate);
+      const nextPeriods = new Date(menstrual?.nextPeriodStartDate);
       
-    
-      const isNextPeriods = (day: number) => {
-        const isFound = nextPeriodDays.find(
-          (each) => each.getDate() === day && each.getMonth() === rawDate.getMonth()
-        );
-        if (isFound) {
-          return true;
-        }
-        return false;
-      };
-    
-      const isLastPeriod = (day: number) => {
-        const isFound = periodDays.find((each) => each.getDate() === day);
-        if (isFound) {
-          return true;
-        }
-        return false;
-      };
+      previousPeriods.setDate(menstrual?.previousPeriodDate.getDate() -1);
+      periods.setDate(menstrual?.lastPeriodStartDate.getDate() - 1);
+      nextPeriods.setDate(menstrual?.nextPeriodStartDate.getDate() - 1);
+      
+      const beforePre = new Date(previousPeriods);
+      const prev = new Date(periods); 
+      const next = new Date(nextPeriods);
+      
+      const prevPeriodDays = periodTemp(beforePre);
+      const periodDays = periodTemp(prev);
+      const nextPeriodDays =  periodTemp(next);
+
+      const isPreviousPeriods = (day: number) => isPeriodTemp(prevPeriodDays, day, rawDate);
+      const isNextPeriods = (day: number) => isPeriodTemp(nextPeriodDays, day, rawDate)
+      const isLastPeriod = (day: number) => isPeriodTemp(periodDays, day, rawDate);
+
+
     
       const isOvulationDate = (day: number) => {
-        if (menstrual?.ovulationDate?.getDate() === day) return true;
+        const currentDay = new Date(rawDate.getFullYear(), rawDate.getMonth(), day)
+        if (isSameDay(menstrual.ovulationDate, currentDay)) return true;
         return false;
       };
     
       const isSafePeriod = (day: number) => {
-        console.log(menstrual?.safePeriod?.after?.end.toDateString());
+        const currentDay = new Date(rawDate.getFullYear(), rawDate.getMonth(), day)
+        const isWith = isWithinInterval(currentDay, {start: menstrual?.safePeriod?.before?.start, end: menstrual?.safePeriod?.before?.end})
         if (
-          day >= menstrual?.safePeriod?.before?.start?.getDate() &&
-          day <= menstrual?.safePeriod?.before?.end?.getDate()
+          isWith
         )
           return true;
         return false;
       };
     
       const isFertileWindow = (day: number) => {
+        const currentDay = new Date(rawDate.getFullYear(), rawDate.getMonth(), day)
         if (
-          day >= menstrual?.fertileWindow?.start?.getDate() &&
-          day <= menstrual?.fertileWindow?.end?.getDate()
+          isWithinInterval(currentDay, {start: menstrual?.fertileWindow?.start, end: menstrual?.fertileWindow?.end})
         )
           return true;
         return false;
       };
     
       const isSafePeriodAfter = (day: number) => {
+        const currentDay = new Date(rawDate.getFullYear(), rawDate.getMonth(), day)
         if (
-          day >= menstrual?.safePeriod?.after?.start?.getDate() &&
-          day <= menstrual?.safePeriod?.after?.end?.getDate() &&
-          rawDate?.getMonth() === menstrual?.safePeriod?.after?.start?.getMonth()
+          isWithinInterval(currentDay, {start: menstrual?.safePeriod?.after?.start, end: menstrual?.safePeriod?.after?.end})
         )
           return true;
         return false;
