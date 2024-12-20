@@ -1,29 +1,42 @@
-import { format } from "date-fns";
+import { format, getDaysInMonth } from "date-fns";
+import { lengthDays } from "./utils/time";
 
-export class DateGroup {
+export class DateClass {
     date: Date
     static weeksDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
     constructor(date: Date) {
       this.date = date
-    }   
+    } 
 
-    get currentMonth () {
-        return format(this.date, 'MMMM');
+    isCurrentDay (date: number) {
+        return format(new Date(), 'd') === date.toString();
     }
 
-    get currentYear () {
-        return format(this.date, 'yyyy')
+    get days () {
+        const dayNums = getDaysInMonth(this.date.getMonth())
+        return lengthDays(dayNums);
     }
-
+    
     get today () {
         return format(new Date(), 'd')
     }
 
     get weeks () {
-        return DateGroup.weeksDays;
+        return DateClass.weeksDays;
     }
 
-    currentDay (date: number) {
-        return format(new Date(), 'd') === date.toString();
+    get month () {
+        return format(this.date, 'MMMM');
     }
+
+    get year () {
+        return format(this.date, 'yyyy')
+    }
+
+    get dateExport () {
+        return { month: this.month, year: this.year, weeks: this.weeks, isCurrentDay: this.isCurrentDay, days: this.days, rawDate: this.date }
+    }
+
+
+
 }
